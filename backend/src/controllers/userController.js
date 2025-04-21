@@ -1,36 +1,33 @@
 const UserModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const {seq} = require("../utils/util");
 module.exports.registerUser = async (req, res) => {
-  // UserModel.create(req.body)
-  //   .then((user) => {
-  //     res.status(201).json({ message: "User registered successfully", user });
-  //   })
-  //   .catch((error) => {
-  //     res.status(500).json({ message: "Error registering user", error });
-  //   });
-  const { username, password } = req.body;
+  const {username, password, role} = req.body;
+  if (!role) role = "member";
   if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required" });
+    return res.status(400).json({message: "Username and password are required"});
   }
   // check if user exists
-  const userExists = await UserModel.findOne({ username });
+  const userExists = await UserModel.findOne({username});
   if (userExists) {
-    return res.status(400).json({ message: "User already exists" });
+    console.log(await UserModel.find());
+
+    return res.status(400).json({message: "User already exists"});
   }
   // hash password
   const solt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, solt);
   // create user
+  const random = seq();
   const user = await UserModel.create({
+    seq: random,
     username,
     password: hashedPassword,
+    role,
   });
   if (user) {
-    res.status(201).json({
+    res.status(200).json({
       message: "User registered successfully",
       user,
       token: generateToken(user._id),
@@ -39,55 +36,41 @@ module.exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-  const { username, password } = req.body;
+  const {username, password} = req.body;
+
   try {
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({username});
     if (!user) {
       console.log("User not found");
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({message: "Invalid credentials"});
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       console.log("Password mismatch");
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({message: "Invalid credentials"});
     }
-    const token = jwt.sign(
-      { _id: user._id, username: user.username },
-      process.env.JWT_SECRET || "abc123",
-      { expiresIn: "30d" }
-    );
+    const token = jwt.sign({_id: user._id, username: user.username, role: user.role}, process.env.JWT_SECRET || "abc123", {expiresIn: "30d"});
     console.log("Login successful, Token generated");
-    res.json({ token });
+    res.json({token});
   } catch (err) {
     console.error("Error logging in:", err);
-    res.status(500).json({ message: "Error logging in", error: err });
+    res.status(500).json({message: "Error logging in", error: err});
   }
-
-  // const { username, password } = req.body;
-  // const user = await UserModel.findOne({ username });
-  // if (user && (await bcrypt.compare(password, user.password))) {
-  //   res.json({
-  //     message: "Login successful",
-  //     token: generateToken(user._id),
-  //   });
-  // } else {
-  //   res.status(401).json({ message: "Invalid credentials" });
-  // }
 };
 
 // Generate jwt
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || "abc123", {
+  return jwt.sign({id}, process.env.JWT_SECRET || "abc123", {
     expiresIn: "30d",
   });
 };
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find().sort({createdAt: -1});
     res.json(users);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({message: err.message});
   }
 };
 
@@ -96,17 +79,16 @@ exports.deleteUser = async (req, res) => {
     const deletedUser = await UserModel.findByIdAndDelete(req.params.id);
     console.log(deletedUser);
 
-    if (!deletedUser)
-      return res.status(404).json({ message: "User not found" });
-    res.json({ message: "User deleted successfully" });
+    if (!deletedUser) return res.status(404).json({message: "User not found"});
+    res.json({message: "User deleted successfully"});
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({message: err.message});
   }
 };
 
 // Get protected data (requires JWT)
 exports.getProtectedData = (req, res) => {
-  res.json({ message: "This is protected data", user: req.user });
+  res.json({message: "This is protected data", user: req.user});
 };
 
 // const loginUser = async (req, res) => {

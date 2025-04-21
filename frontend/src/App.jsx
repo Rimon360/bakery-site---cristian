@@ -1,10 +1,13 @@
 import AppRoutes from "./routes/AppRoutes";
 import {Toaster, toast} from "react-hot-toast";
+import { GlobalProvider } from "./context/GlobalStete";
 function App() {
   return (
     <>
-      <Toaster position="top-right" />
+    <GlobalProvider> 
+      <Toaster position="bottom-right" />
       <AppRoutes />
+    </GlobalProvider>
     </>
   );
 }
