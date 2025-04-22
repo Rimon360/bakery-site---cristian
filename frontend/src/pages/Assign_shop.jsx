@@ -139,7 +139,7 @@ const Assign_shop = () => {
                   </p>
                   <p>
                     <button onClick={handleAssingShop(shop, shop.isAssigned)} className={` pl-2 pr-2 pt-1 pb-1 rounded-lg cursor-pointer  ${shop.isAssigned ? "bg-red-100 text-red-500 hover:bg-red-500 hover:text-white" : "bg-orange-100 text-orange-500 hover:bg-orange-500 hover:text-white"}`}>
-                      {shop.isAssigned ? "Unassign" : "Assign"} <BsArrowRight className="inline" /> Rimon
+                      {shop.isAssigned ? "Unassign" : "Assign"} <BsArrowRight className="inline" />
                     </button>
                   </p>
                 </li>
