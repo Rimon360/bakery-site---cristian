@@ -1,6 +1,7 @@
 const {shopsModel, assignModel} = require("../models/shopModel");
 const productModel = require("../models/productModel");
 const {seq} = require("../utils/util");
+const UserModel = require("../models/userModel");
 module.exports.createShop = async (req, res) => {
   try {
     const {shop_name} = req.body;
@@ -79,7 +80,7 @@ module.exports.getAssignedShops = async (req, res) => {
 };
 
 module.exports.getAllShop = async (req, res) => {
-  const shops = await shopsModel.find().sort({_id: -1});
+  const shops = await shopsModel.find().sort({_id: 1});
   res.status(200).json({
     shops,
   });
@@ -93,5 +94,16 @@ module.exports.getShopByUserId = async (req, res) => {
   const shops = await shopsModel.find({_id: {$in: shopsId}}).sort({createdAt: -1});
   res.status(200).json({
     shops,
+  });
+};
+module.exports.getUserByShopId = async (req, res) => {
+  const {shop_id} = req.params;
+  const user_ids = await assignModel.find({shop_id: shop_id}).distinct("user_id");
+  if (user_ids.length < 1) {
+    return res.status(200).json({message: "No shop assigned yet", users: []});
+  }
+  const users = await UserModel.find({_id: {$in: user_ids}}).sort({username: 1});
+  res.status(200).json({
+    users,
   });
 };

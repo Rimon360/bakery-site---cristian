@@ -11,4 +11,5 @@ router.get("/protected", authMiddleware, getProtectedData);
 router.delete("/:id", deleteUser);
 router.post("/dashboard", authMiddleware);
 
+
 module.exports = router;

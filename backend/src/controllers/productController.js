@@ -4,7 +4,7 @@ module.exports.createProduct = async (req, res) => {
   const {shop_id, product_name} = req.body;
   if (!shop_id) {
     return res.status(400).json({message: "shop name and password are required"});
-  } 
+  }
   const products = await productModel.create({
     seq: seq(),
     product_name,
@@ -16,6 +16,45 @@ module.exports.createProduct = async (req, res) => {
       products,
     });
   }
+};
+
+module.exports.getReports = async (req, res) => {
+  const products = await productModel.aggregate([
+    {
+      $addFields: {
+        shop_id_obj: {$toObjectId: "$shop_id"},
+      },
+    },
+    {
+      $group: {
+        _id: "$shop_id_obj",
+        products: {$push: "$$ROOT"},
+      },
+    },
+    {
+      $lookup: {
+        from: "shops",
+        localField: "_id",
+        foreignField: "_id",
+        as: "shop",
+      },
+    },
+    {
+      $unwind: "$shop",
+    },
+    {
+      $project: {
+        shop_id: "$_id",
+        shop_name: "$shop.shop_name",
+        products: 1,
+        _id: 0,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    products,
+  });
 };
 
 module.exports.getProductByShopId = async (req, res) => {
@@ -34,7 +73,7 @@ module.exports.updateProductById = async (req, res) => {
     const products = await productModel.updateOne({_id: id}, {$set: {wastage, baked}});
     res.status(200).json({
       message: "success",
-      products
+      products,
     });
   } catch (error) {
     res.status(400).json({

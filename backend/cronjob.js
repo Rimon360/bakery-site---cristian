@@ -1,0 +1,43 @@
+const cron = require("node-cron");
+
+const axios = require("axios");
+const reportUrl = "http://localhost:8000/api/products/get_report";
+const fileSaveDir = "../reports/";
+const fs = require("fs");
+
+console.log("Started cron job...");
+
+// Run a task every 30 seconds
+cron.schedule("*/5 * * * * *", () => {
+  axios
+    .get(reportUrl)
+    .then((response) => {
+      if (!fs.existsSync(fileSaveDir)) {
+        fs.mkdirSync(fileSaveDir, {recursive: true});
+      }
+      response.data.products.forEach((product) => {
+        let csvData = "Product Name,Goods baked,Wastage \n";
+        let shopName = product.shop_name;
+        product.products.forEach((p) => {
+          csvData += `${p.product_name},${p.baked},${p.wastage} \n`;
+        });
+        const formattedDate = new Date().toISOString().replace(/T/, "_").replace(/:/g, "-").split(".")[0];
+        let dir = fileSaveDir + "records_" + formattedDate + "/";
+        fs.mkdirSync(dir, {recursive: true});
+        const fileName = `${dir}${shopName}.csv`;
+        fs.writeFile(fileName, csvData, (err) => {
+          if (err) {
+            console.error("Error saving the file:", err);
+          }
+        });
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+});
+
+// Run a task every evening at 7:00 PM
+cron.schedule("0 19 * * *", () => {
+  console.log("running a task every evening at 7:00 PM");
+});

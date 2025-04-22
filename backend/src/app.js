@@ -21,12 +21,13 @@ mongoose
   });
 app.use("/api/users", userRoutes);
 
+app.use('/api/products', productRoutes)
+
 app.get("/api/verify-token", verifyToken, (req, res) => {
   res.json({message: "success", user: req.user});
 });
 
 app.use('/api/shops', shopRoutes) 
-app.use('/api/products', productRoutes)
 
 app.use((req, res) => {
   res.status(404).json({message: "Not Found"});

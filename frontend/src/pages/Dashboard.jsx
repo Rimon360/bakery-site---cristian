@@ -17,42 +17,50 @@ function Dashboard() {
   const role = current_user.role;
   const logout = () => {
     localStorage.removeItem("token");
-    nav("/login");
+    if (role == "admin") {
+      nav("/admin");
+    } else {
+      nav("/");
+    }
   };
 
   return (
     <section className="flex h-screen">
-      <aside className="w-64 bg-gray-800 text-white p-4 flex flex-col justify-between">
-        <ul className="space-y-1">
-          <li className="flex justify-between mb-10 bg-gray-900 p-2 rounded-lg">
-            {current_user.username}
-            <span className=" inline-block bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow">{current_user.role}</span>
-          </li>
-          <li>
-            {role == "admin" ? (
-              <NavLink to={"/dashboard/users"} end className={({isActive}) => (isActive ? "text-white bg-gray-900" : "")}>
-                <FaRegUser /> Manage user
+      {role == "admin" ? (
+        <aside className="w-64 bg-gray-800 text-white p-4 flex flex-col justify-between">
+          <ul className="space-y-1">
+            <li className="flex justify-between mb-10 bg-gray-900 p-2 rounded-lg">
+              {current_user.username}
+              <span className=" inline-block bg-gray-800 text-white text-xs px-2 py-1 rounded-full shadow">{current_user.role}</span>
+            </li>
+            <li>
+              {role == "admin" ? (
+                <NavLink to={"/dashboard/users"} end className={({isActive}) => (isActive ? "text-white bg-gray-900" : "")}>
+                  <FaRegUser /> Manage user
+                </NavLink>
+              ) : (
+                <></>
+              )}
+            </li>
+            <li>
+              <NavLink to={"/dashboard/shops"} className={({isActive}) => (isActive ? "text-white bg-gray-900" : "")}>
+                <CiShop /> Manage shop
               </NavLink>
-            ) : (
-              <></>
-            )}
-          </li>
-          <li>
-            <NavLink to={"/dashboard/shops"} className={({isActive}) => (isActive ? "text-white bg-gray-900" : "")}>
-              <CiShop /> Manage shop
-            </NavLink>
-          </li>
-        </ul>
-        <button onClick={logout} className="w-full flex items-center gap-2 mt-4 py-2 px-4 bg-gray-500 text-white font-semibold rounded-lg hover:bg-red-500">
-          Logout <FiLogOut />
-        </button>
-      </aside>
-
+            </li>
+          </ul>
+          <button onClick={logout} className="w-full flex items-center gap-2 mt-4 py-2 px-4 bg-gray-500 text-white font-semibold rounded-lg hover:bg-red-500">
+            Logout <FiLogOut />
+          </button>
+        </aside>
+      ) : (
+        ""
+      )} 
       <section className="right-section h-screen overflow-auto flex-1 p-4 bg-gray-50">
         <Routes>
           <Route path="/" element={<Users />} />
           <Route path="/users" element={<Users />} />
           <Route path="/shops" element={<Shops />} />
+          <Route path="/shops/:shop_id" element={<Shops />} />
           <Route path="/assign-product/:id" element={<Assign_shop />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

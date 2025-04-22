@@ -133,8 +133,8 @@ const Users = () => {
                   <th className="p-2">ID</th>
                   <th className="p-2">Username</th>
                   <th className="p-2">Role</th>
-                  <th className="p-2 text-center">Assigned product</th>
-                  <th className="p-2 text-center">Action</th>
+                  <th className="p-2 text-center">Assigned Shop</th>
+                  <th className="p-2 text-center">Del</th>
                   <th className="p-2">Created at</th>
                 </tr>
               </thead>
@@ -154,7 +154,7 @@ const Users = () => {
                         </div>
                       </td>
                       <td className="p-2 flex justify-center">
-                        <button onClick={() => openModal(user._id, user.username)} className="px-2 py-1 bg-orange-500 text-white rounded hover:bg-orange-600">
+                        <button onClick={() => openModal(user._id, user.username)} className="px-2 py-1 text-orange-400 rounded hover:bg-orange-200">
                           <RiDeleteBin6Line />
                         </button>
                       </td>
