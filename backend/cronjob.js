@@ -1,16 +1,16 @@
 const cron = require("node-cron");
-
 const axios = require("axios");
-const reportUrl = "http://localhost:8000/api/products/get_report";
-const fileSaveDir = "../reports/";
+const ipv4 = require("ip4");
 const fs = require("fs");
 
-console.log("Started cron job...");
+const reportUrl = `http://${ipv4}:8000/api/products/get_report`;
+const fileSaveDir = "../reports/";
+console.log("Started cron job...", reportUrl);
 
 // Run a task every 30 seconds
 // */5 * * * * * means every 5 seconds
 
-cron.schedule("*/5 * * * * *", () => {
+cron.schedule("0 19 * * *", () => {
   axios
     .get(reportUrl)
     .then((response) => {
