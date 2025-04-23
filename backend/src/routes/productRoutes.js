@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express"); 
 const {createProduct, getProductByShopId, updateProductById, deleteProductById,getReports} = require("../controllers/productController");
 const {memberMiddleware, adminMiddleware} = require("../middlewares/authMiddleware");
 

@@ -270,11 +270,10 @@ const Shops = () => {
             </>
           )}
           {products.length > 0 ? (
-            <div className="max-h-[300px] overflow-auto">
+            <div className="overflow-auto">
               <table>
                 <thead>
                   <tr>
-                    <th>Product id</th>
                     <th>Product name</th>
                     <th>Goods Baked</th>
                     <th>Wastage</th>
@@ -286,7 +285,6 @@ const Shops = () => {
                   {products.map((product) => {
                     return (
                       <tr key={product._id} className="hover:bg-gray-100">
-                        <td># {product.seq}</td>
                         <td>{product.product_name}</td>
                         <td>
                           <div className="flex items-center justify-center">

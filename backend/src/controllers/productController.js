@@ -1,5 +1,6 @@
 const productModel = require("../models/productModel");
-const {seq} = require("../utils/util");
+const {seq, getDate, prependToFile} = require("../utils/util");
+const mongoose = require("mongoose");
 module.exports.createProduct = async (req, res) => {
   const {shop_id, product_name} = req.body;
   if (!shop_id) {
@@ -70,7 +71,41 @@ module.exports.getProductByShopId = async (req, res) => {
 module.exports.updateProductById = async (req, res) => {
   try {
     const {id, wastage, baked} = req.body;
+    const username = req?.user?.username || "--";
+
     const products = await productModel.updateOne({_id: id}, {$set: {wastage, baked}});
+    const data = await productModel.aggregate([
+      {
+        $addFields: {
+          shop_id: {$toObjectId: "$shop_id"},
+        },
+      },
+      {
+        $match: {_id: new mongoose.Types.ObjectId(id)}, // replace with actual ID
+      },
+      {
+        $lookup: {
+          from: "shops",
+          localField: "shop_id",
+          foreignField: "_id",
+          as: "shops",
+        },
+      },
+      {$unwind: "$shops"},
+      {
+        $project: {
+          product_name: 1,
+          seq: 1,
+          shop_name: "$shops.shop_name",
+        },
+      },
+    ]);
+ 
+    let logData = `${getDate()};${data[0].shop_name};${username};${data[0].seq};${data[0].product_name};${baked};${wastage}\n`;
+    
+    prependToFile("../logs/", logData);
+    
+
     res.status(200).json({
       message: "success",
       products,

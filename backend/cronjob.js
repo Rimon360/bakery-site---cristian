@@ -8,9 +8,9 @@ const fs = require("fs");
 console.log("Started cron job...");
 
 // Run a task every 30 seconds
-// */5 * * * * ** means every 5 seconds
+// */5 * * * * * means every 5 seconds
 
-cron.schedule("0 19 * * *", () => {
+cron.schedule("*/5 * * * * *", () => {
   axios
     .get(reportUrl)
     .then((response) => {
