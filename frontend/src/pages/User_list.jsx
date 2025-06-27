@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {shopsURL} from "../routes/Url";
-import {useNavigate, useParams, NavLink} from "react-router-dom";
-import {IoMdArrowBack} from "react-icons/io";
+import { useEffect, useState } from "react";
+import { shopsURL } from "../routes/Url";
+import { useNavigate, useParams, NavLink } from "react-router-dom";
+import { IoMdArrowBack } from "react-icons/io";
 import toast from "react-hot-toast";
 const User_list = () => {
   const [userList, setUserList] = useState([]);
@@ -33,7 +33,7 @@ const User_list = () => {
   };
   return (
     <div className=" mx-auto">
-      <h1 className="text-center text-2xl text-orange-400 font-bold mt-4">{userList.length > 0 ? "SELECT USER" : ""}</h1>
+      <h1 className="text-center text-2xl text-yellow-400 font-bold mt-4">{userList.length > 0 ? "USER" : ""}</h1>
       <div className=" overflow-auto p-4 flex flex-wrap justify-center items-center">
         {userList.length > 0 ? (
           userList.map((user) => (

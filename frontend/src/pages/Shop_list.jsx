@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {shopsURL} from "../routes/Url";
-import {useNavigate, NavLink} from "react-router-dom";
-import {IoMdArrowBack} from "react-icons/io";
+import { useEffect, useState } from "react";
+import { shopsURL } from "../routes/Url";
+import { useNavigate, NavLink } from "react-router-dom";
+import { IoMdArrowBack } from "react-icons/io";
 const Shop_list = () => {
   const [shopList, setShopList] = useState([]);
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Shop_list = () => {
   };
   return (
     <div className=" mx-auto">
-      <h1 className="text-center text-2xl text-orange-400 font-bold mt-4">{shopList.length > 0 ? "SELECT YOUR SHOP" : ""}</h1>
+      <h1 className="text-center text-2xl text-green-400 font-bold mt-4">{shopList.length > 0 ? "SHOP" : ""}</h1>
       <div className=" overflow-auto p-4 flex flex-wrap justify-center items-center">
         {shopList.length > 0 ? (
           shopList.map((shop) => (

@@ -1,13 +1,13 @@
-import {useEffect, useState} from "react";
-import {RiDeleteBin6Line} from "react-icons/ri";
-import {TiUserAdd} from "react-icons/ti";
+import { useEffect, useState } from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { TiUserAdd } from "react-icons/ti";
 import axios from "axios";
-import {Navigate, Link} from "react-router-dom";
-import {registerURL, usersUrl} from "../routes/Url";
+import { Navigate, Link } from "react-router-dom";
+import { registerURL, usersUrl } from "../routes/Url";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import {FaExternalLinkAlt} from "react-icons/fa";
-import {useGlobal} from "../context/GlobalStete";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { useGlobal } from "../context/GlobalStete";
 const Users = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,7 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const {current_user} = useGlobal();
+  const { current_user } = useGlobal();
   const role = current_user.role;
   if (role !== "admin") {
     return <Navigate to={"/dashboard/shops"} />;
@@ -107,8 +107,8 @@ const Users = () => {
               <input type="text" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value.replace(' ', '_').toLowerCase())} />
             </label>
             <label className="flex flex-col justify-between mb-2 w-full">
-              Password:
-              <input type="text" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value.replace(' ', '_').toLowerCase())} />
+              PIN:
+              <input type="number" placeholder="Enter PIN" value={password} onChange={(e) => setPassword(e.target.value.replace(' ', '_').toLowerCase())} />
             </label>
             <label className="flex flex-col justify-between mb-2 w-full">
               Role:
